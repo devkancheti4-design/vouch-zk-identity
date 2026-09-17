@@ -193,3 +193,26 @@ footer { border-top: 1px solid var(--line); padding: 22px 26px; background: var(
 .profile ul { margin: 0; padding-left: 18px; }
 .profile li { font-size: 12.5px; color: var(--text); margin: 2px 0; }
 @media (max-width: 760px) { .link-panes { grid-template-columns: 1fr; } .link-toggle { margin-left: 0; } }
+
+/* ---- sharded page ---- */
+.sig-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 18px 0 6px; }
+.sig-compare h4 { margin: 0 0 8px; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.sig.hi { border-color: var(--accent); }
+.sig.hi .sig-k { color: var(--accent); }
+.shard-controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 16px 0 10px; }
+.shard-controls label { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.shard-controls select { background: var(--bg); color: var(--text); border: 1px solid var(--line2);
+  border-radius: 8px; padding: 6px 8px; font: inherit; font-size: 13px; }
+.shard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 12px 0; }
+.shard { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; text-align: left;
+  background: var(--bg); border: 1px dashed var(--line2); border-radius: 11px; padding: 11px 13px;
+  cursor: pointer; font: inherit; color: var(--text); transition: border-color .15s, background .15s; }
+.shard:hover { border-color: var(--accent); }
+.shard.on { border-style: solid; border-color: var(--accent); background: #0f2a28; }
+.shard-n { font-size: 11px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.shard-y { font-size: 12px; }
+.shard-f { font-size: 11px; color: var(--muted); }
+.shard.on .shard-f { color: var(--accent); }
+ul.plain { margin: 10px 0 0; padding-left: 18px; }
+ul.plain li { font-size: 13.5px; color: var(--text); margin: 7px 0; line-height: 1.55; }
+@media (max-width: 760px) { .sig-compare { grid-template-columns: 1fr; } }

@@ -1,14 +1,14 @@
-✔ any k of n shards reconstruct the secret (8.007459ms)
-✔ more than k shards also reconstruct (0.567791ms)
-✔ fewer than k shards are REFUSED, not silently wrong (0.329375ms)
-✔ duplicating one shard does not manufacture a quorum (0.117ms)
-✔ k-1 shards leave the secret information-theoretically hidden (3.0425ms)
-✔ shards of different secrets cannot be mixed (0.245541ms)
-✔ a shard file round-trips and is useless alone (1.237375ms)
-✔ a junk file is rejected (0.081375ms)
-✔ every shard is a valid field element, so the circuit can consume the result (0.704ms)
-✔ 2-of-2 and n-of-n both work (1.677834ms)
-✔ splitting twice gives different shards for the same secret (0.47475ms)
+✔ any k of n shards reconstruct the secret (8.000292ms)
+✔ more than k shards also reconstruct (0.584625ms)
+✔ fewer than k shards are REFUSED, not silently wrong (0.309375ms)
+✔ duplicating one shard does not manufacture a quorum (0.104875ms)
+✔ k-1 shards leave the secret information-theoretically hidden (2.687625ms)
+✔ shards of different secrets cannot be mixed (0.123833ms)
+✔ a shard file round-trips and is useless alone (1.035417ms)
+✔ a junk file is rejected (0.073041ms)
+✔ every shard is a valid field element, so the circuit can consume the result (0.618292ms)
+✔ 2-of-2 and n-of-n both work (1.697333ms)
+✔ splitting twice gives different shards for the same secret (0.50275ms)
 ℹ tests 11
 ℹ suites 0
 ℹ pass 11
@@ -16,4 +16,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 199.353
+ℹ duration_ms 203.210792
