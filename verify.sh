@@ -42,6 +42,18 @@ else
   line "wallet storage" "FAILED (see docs/wallet-tests.txt)"; fail=1
 fi
 
+if ( cd "$ROOT/frontend" && npx tsx --test test/shards.test.mjs > "$ROOT/docs/shard-tests.txt" 2>&1 ); then
+  line "secret sharding" "$(grep -cE '^✔' "$ROOT/docs/shard-tests.txt") tests passing, 0 failing"
+else
+  line "secret sharding" "FAILED (see docs/shard-tests.txt)"; fail=1
+fi
+
+if ( cd "$ROOT/circuits" && npx tsx --test experiments/shard.test.mjs > "$ROOT/docs/decentral-tests.txt" 2>&1 ); then
+  line "decentralised issuer" "$(grep -cE '^✔' "$ROOT/docs/decentral-tests.txt") tests passing, 0 failing"
+else
+  line "decentralised issuer" "FAILED (see docs/decentral-tests.txt)"; fail=1
+fi
+
 echo
 if [ $fail -eq 0 ]; then echo "  ALL CHECKS PASSED"; else echo "  SOME CHECKS FAILED"; fi
 exit $fail
