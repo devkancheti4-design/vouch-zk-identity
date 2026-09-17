@@ -1,0 +1,13 @@
+{
+  "name": "vouch-circuits",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": { "build": "bash build.sh", "prove": "bash prove.sh" },
+  "devDependencies": {
+    "circom2": "^0.2.23",
+    "circomlib": "^2.0.5",
+    "circomlibjs": "^0.1.7",
+    "snarkjs": "^0.7.6"
+  }
+}

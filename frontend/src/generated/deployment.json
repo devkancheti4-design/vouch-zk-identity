@@ -1,0 +1,47 @@
+{
+  "chainId": 31337,
+  "rpcUrl": "http://127.0.0.1:8549",
+  "deployedAt": "2026-09-17T17:21:43.422Z",
+  "issuerLabel": "Demo KYC Provider",
+  "issuerPubX": "16256427309067318996113477331037527797444329102066601306330596369324314410467",
+  "issuerPubY": "5404833324877437496892341675876228763119597194797211767738034807954009477490",
+  "contracts": {
+    "registry": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
+    "verifier": "0x5fbdb2315678afecb367f032d93f642f64180aa3"
+  },
+  "admin": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+  "holders": [
+    "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+    "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+    "0x90f79bf6eb2c4f870365e785982e1f101e93b906"
+  ],
+  "policies": [
+    {
+      "policyId": 1,
+      "name": "Over 18",
+      "minAgeDays": 6570,
+      "minBalance": 0,
+      "requireAge": true,
+      "requireBalance": false,
+      "requireAccredited": false
+    },
+    {
+      "policyId": 2,
+      "name": "Accredited investor",
+      "minAgeDays": 6570,
+      "minBalance": 100000,
+      "requireAge": true,
+      "requireBalance": true,
+      "requireAccredited": true
+    },
+    {
+      "policyId": 3,
+      "name": "Solvent over 10k",
+      "minAgeDays": 0,
+      "minBalance": 10000,
+      "requireAge": false,
+      "requireBalance": true,
+      "requireAccredited": false
+    }
+  ]
+}

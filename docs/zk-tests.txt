@@ -1,0 +1,54 @@
+▶ 1 — a proof can be made, and it verifies
+  ✔ an eligible holder proves age, solvency and accreditation at once (686.336625ms)
+✔ 1 — a proof can be made, and it verifies (1425.638292ms)
+▶ 2 — ZERO PRIVATE DATA IN THE PUBLIC SIGNALS
+  ✔ changing dobDays changes NO public signal (1001.278333ms)
+  ✔ changing balance changes NO public signal (1019.7695ms)
+  ✔ changing countryCode changes NO public signal (987.652667ms)
+  ✔ changing flags changes NO public signal (982.046583ms)
+  ✔ changing expiresAt changes NO public signal (972.164833ms)
+  ✔ no public signal equals a high-entropy private value (480.395958ms)
+  ✔ the public signals are exactly the policy, the context and the nullifier — nothing else (479.678167ms)
+  ✔ two DIFFERENT people proving the SAME policy are indistinguishable but for the nullifier (976.455625ms)
+  ✔ the proof itself is randomised: the same statement twice gives different proofs (921.194916ms)
+✔ 2 — ZERO PRIVATE DATA IN THE PUBLIC SIGNALS (7822.599417ms)
+▶ 3 — the nullifier: replay-detectable, and unlinkable across verifiers
+  ✔ same holder, same context → the same nullifier (a verifier can reject a second use) (902.954125ms)
+  ✔ same holder, different context → different nullifiers (two verifiers cannot collude) (907.204458ms)
+✔ 3 — the nullifier: replay-detectable, and unlinkable across verifiers (1810.863209ms)
+ERROR:  4 Error in template Vouch_322 line: 97
+
+▶ 4 — a claim that is not true cannot be proven
+  ✔ underage: no proof exists (153.916ms)
+ERROR:  4 Error in template Vouch_322 line: 103
+
+  ✔ insufficient balance: no proof exists (156.530958ms)
+ERROR:  4 Error in template Vouch_322 line: 108
+
+  ✔ not accredited: no proof exists (156.232083ms)
+ERROR:  4 Error in template Vouch_322 line: 91
+
+  ✔ expired credential: no proof exists (153.144958ms)
+  ✔ but the SAME holder can still prove a weaker policy (487.552542ms)
+✔ 4 — a claim that is not true cannot be proven (1107.918583ms)
+ERROR:  4 Error in template ForceEqualIfEnabled_243 line: 56
+Error in template EdDSAPoseidonVerifier_244 line: 117
+Error in template Vouch_322 line: 85
+
+▶ 5 — a credential cannot be forged, stolen or altered
+  ✔ a rogue issuer's signature does not satisfy the real issuer's key (152.882625ms)
+  ✔ a rogue issuer CAN be used if a verifier foolishly names it — the key is public and chosen by the verifier (480.096125ms)
+ERROR:  4 Error in template ForceEqualIfEnabled_243 line: 56
+Error in template EdDSAPoseidonVerifier_244 line: 117
+Error in template Vouch_322 line: 85
+
+  ✔ altering an attribute after issuance invalidates the signature (156.422042ms)
+ERROR:  4 Error in template ForceEqualIfEnabled_243 line: 56
+Error in template EdDSAPoseidonVerifier_244 line: 117
+Error in template Vouch_322 line: 85
+
+  ✔ a stolen credential is useless without the holder's secret (155.561917ms)
+✔ 5 — a credential cannot be forged, stolen or altered (945.395541ms)
+▶ 6 — the policy is bound into the proof
+  ✔ a proof for a weak policy does not verify against a strong one (503.613458ms)
+✔ 6 — the policy is bound into the proof (503.774416ms)

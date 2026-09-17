@@ -1,0 +1,8 @@
+{
+  "name": "vouch-issuer-api",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": { "dev": "node src/index.mjs", "start": "node src/index.mjs" },
+  "dependencies": { "circomlibjs": "^0.1.7", "cors": "^2.8.5", "express": "^4.21.2" }
+}

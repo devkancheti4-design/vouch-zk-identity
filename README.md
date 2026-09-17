@@ -1,0 +1,96 @@
+# VOUCH — prove you qualify, show them nothing
+
+Every age check today works the same way: to prove one fact you hand over a document that reveals
+fifty. Your birthday, your address, your photo, your document number, all of it, to a shop that
+only needed to know you are over 18.
+
+VOUCH replaces the document with a proof. A bank or KYC provider signs your attributes once. After
+that your browser can prove any single claim about them — old enough, solvent enough, accredited —
+to anyone, forever, without the claim's subject ever leaving your device.
+
+```
+ISSUER (a server)          HOLDER (a browser)            VERIFIER (a chain)
+Node + circomlibjs   ──▶   TypeScript + snarkjs   ──▶    Solidity, snarkjs-generated
+holds the signing key      holds credential+secret       checks the pairing
+knows your details         builds every proof            knows nothing about you
+       └── credential ─────────┘        └── proof only ──────────┘
+```
+
+The issuer is never contacted again after issuance. It cannot see which verifier you visit, or
+when, so it cannot build a profile even if it wanted to.
+
+## What is in the box
+
+| path | what |
+|---|---|
+| `circuits/` | `vouch.circom` — the whole zero-knowledge statement in 166 lines. EdDSA signature check, holder binding, expiry, three predicates, nullifier. `build.sh` runs the Groth16 setup and exports the Solidity verifier; `test/zk.test.mjs` is the 22-test audit |
+| `server/` | the issuer API. Holds the signing key, runs the identity check, signs six attributes. The user never sees the key |
+| `contracts/` | `VouchRegistry.sol` — publishes policies, binds each proof to one, burns the nullifier, stores one boolean. Plus the generated `Groth16Verifier.sol` and 10 tests driven by a real proof |
+| `frontend/` | the product: a wallet, three storefronts that each demand a different claim, a live leak audit, and an architecture page with measured charts |
+| `verify.sh` | one command that runs every check |
+
+## Run it
+
+```bash
+cd circuits && npm install && npm run build     # once: compile + local Groth16 ceremony
+```
+
+```bash
+cd contracts && npm run node                    # terminal 1 — chain on :8549
+cd contracts && npm run deploy:local            # terminal 2 — verifier, registry, 3 policies
+cd server && npm start                          # terminal 3 — issuer API on :4000
+cd frontend && npm run dev -- --port 5176       # terminal 4 — the site on :5176
+```
+
+Then: **Get verified** (the server signs your credential) → **Where it's used** (a shop demands a
+claim; your browser proves it and the chain verifies it) → **What leaks?** (the honest test).
+
+## The numbers, all measured
+
+| | |
+|---|---|
+| circuit | 10,273 constraints · **9 private inputs** · 9 public · 1 output |
+| proving, in the browser | ~553 ms · 5.2 MB proving key · 256-byte proof |
+| local verify before sending | ~8 ms |
+| on-chain `clear()` | ~357,000 gas including the pairing check |
+| tests | 22 zero-knowledge audit + 10 registry = **32 passing** |
+| where the constraints go | EdDSA 8,086 (79%) · Poseidon 1,899 · range checks 271 · logic 17 |
+
+The headline from that last row: proving **who vouched for you** costs four fifths of the circuit,
+while the compliance logic everyone talks about is 2.6% of it. Privacy is nearly free. Trust is
+what you pay for.
+
+## The claim that matters, and how it is settled
+
+"No private data reaches the public signals" is easy to assert and easy to fake. It is settled here
+with an information-flow argument: **if a private value could be recovered from the public signals,
+then changing it would have to change one of them.** So the audit proves the same claim from
+wildly different private data and compares the output byte for byte.
+
+```
+born 1990 · reserves 250,000 · UK        ─┐
+born 1961 · reserves 250,000 · UK         │  byte-identical
+born 1990 · reserves 9,999,999 · UK       │  public signals
+born 1990 · reserves 250,000 · Germany   ─┘
+a different person entirely              ─── only the nullifier moves
+```
+
+Run it yourself in the app under **What leaks?**, or from the terminal:
+
+```bash
+cd circuits && node --test test/zk.test.mjs
+```
+
+The suite also proves: a false claim is **unprovable**, not merely rejected (underage, insolvent,
+unaccredited and expired credentials all fail to produce a proof at all); a stolen credential is
+useless without the holder's secret; altering an attribute after issuance breaks the signature; a
+rogue issuer cannot impersonate the real one; the nullifier is stable within one verifier and
+unlinkable across two; and the proof is randomised, so proving twice does not produce the same bytes.
+
+## What it does not do
+
+The trusted setup is a local one-contributor ceremony with fixed entropy so the artifacts are
+reproducible. Production needs a multi-party ceremony over the same circuit. Revocation is by
+credential expiry only; a revocation list would be a Merkle non-membership proof in the same
+circuit. The issuer is still trusted to attest truthfully — zero-knowledge hides the data, it does
+not make a lying issuer honest.

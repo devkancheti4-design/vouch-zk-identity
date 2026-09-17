@@ -1,0 +1,14 @@
+node_modules/
+dist/
+artifacts/
+cache/
+coverage/
+.env
+.DS_Store
+*.log
+circuits/build/*.ptau
+circuits/build/*_0000.zkey
+circuits/build/input.json
+circuits/build/proof.json
+circuits/build/public.json
+frontend/public/circuit/
