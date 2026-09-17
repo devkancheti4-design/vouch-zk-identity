@@ -192,6 +192,117 @@ code. ZKPassport's moat is reading passport NFC chips and being trusted to; the 
 part. Realistically the gap to something a regulator would accept is 12–18 months and a compliance
 team, not an engineer.
 
+### Correction: I tested that estimate, and I was wrong on half of it
+
+The claim above — *"None is a weekend of code. Realistically 12–18 months and a compliance team"* —
+was asserted, not measured. Challenged on it, I attempted each gap. Results, all from 2026-09-18:
+
+| Gap | What I claimed | What I measured | Verdict |
+|---|---|---|---|
+| **Multi-party ceremony** | months | **14 s** of compute | **Wrong** |
+| **Revocation** | months | **~1 hour**, works, 4/4 tests pass | **Wrong** |
+| **Device binding** | months | natively supported; ~1 day, no circuit change | **Wrong** |
+| **Interoperability** | months of compliance | ~185× constraint blowup | **Wrong — it is worse** |
+| **Accredited issuer** | months | not code at all | Right |
+| **Certification** | months | not code at all | Right |
+
+#### The ceremony took 14 seconds
+
+Three independent contributors plus a public random beacon, then a full chain verification:
+
+```
+contributor 1 (Alice, laptop)      2s
+contributor 2 (Bob, airgapped)     3s
+contributor 3 (Carol, HSM)         5s
+beacon applied                     6s
+snarkjs zkey verify  →  ZKey Ok!   (8s, all 4 contributions attested)
+```
+
+A proof built with the ceremony key verifies; the old demo key correctly rejects it. This is
+drop-in. Phase 1 does not even need running — production uses the Perpetual Powers of Tau, a real
+community ceremony already completed by dozens of contributors.
+
+What is *not* 14 seconds is recruiting independent humans and publishing their attestations. That is
+days to weeks of coordination. It is not months, and it is not engineering.
+
+#### Revocation took about an hour, and it works
+
+`circuits/experiments/vouch_rev.circom` adds a sparse-Merkle **exclusion** proof (`SMTVerifier`,
+`fnc = 1`) over a 2^20 revocation tree, with `credentialId` bound into the issuer's signature so it
+cannot be swapped for an unrevoked one, and `revocationRoot` as a tenth public input the verifier
+pins to the issuer's latest.
+
+| | Baseline | With revocation | Cost |
+|---|---|---|---|
+| Constraints | 10,273 | **23,325** | +127% |
+| Proving | 358 ms | **975 ms** | 2.7× |
+| zkey | 5.2 MB | **10.7 MB** | 2.1× |
+| Powers of tau | 2^14 | 2^15 | one size up |
+
+All four tests pass. The one that matters: **a revoked credential cannot produce a proof at all** —
+the exclusion constraint fails at witness generation, so there is nothing to submit. Not "rejected
+later"; unprovable.
+
+This is a real cost — it roughly doubles everything — but it is a known, bounded, one-afternoon
+cost, not a research problem.
+
+#### Device binding needs no circuit change at all
+
+The lending problem in §4.2 is fixable by deriving `holderSecret` from a hardware passkey instead of
+generating and storing it. Checked in Chrome 152 on this machine:
+
+```
+extension:prf                       true
+userVerifyingPlatformAuthenticator  true
+```
+
+WebAuthn's PRF extension is natively supported. A secret derived that way never exists in
+`localStorage`, cannot be written into a backup file, and requires the authenticator plus user
+verification for every proof. That is roughly a day in `wallet.ts` and **zero** circuit changes.
+
+The trade is real and is why this was not simply done: a hardware-bound secret cannot be backed up,
+so losing the device loses the credential. That is the choice production systems make, and it should
+be the holder's, not mine. *(Capability verified; I did not create a passkey on the user's machine.)*
+
+#### Interoperability is the one real wall — and it is worse than I said
+
+I called this a compliance problem. It is an architectural one, and measuring the circuit shows why.
+Compiling it with the signature check removed:
+
+| | Constraints |
+|---|---|
+| Whole circuit | 10,273 |
+| Business logic alone (age, balance, accreditation, expiry, nullifier) | **2,187** |
+| **EdDSA-BabyJubJub signature verification** | **8,086 — 79%** |
+
+Four-fifths of this circuit is one signature check, on the *cheapest curve that exists* for it —
+BabyJubJub is native to BN254's scalar field, which is precisely why it was chosen.
+
+Real issuers do not sign with it. mdoc/ISO 18013-5 uses P-256 ECDSA; passports use RSA. Verifying
+P-256 in circom costs roughly **1.5 million constraints** — about **185× our entire signature
+check**, and ~65× the whole revocation-enabled circuit. At that size Groth16 on BN254 stops being
+the right tool; Spartan on secq256k1 gets ECDSA down to ~3k constraints, but that is a different
+proof system, a different verifier, and no longer a 724-byte proof you can check on-chain for
+$0.009.
+
+So the honest statement is not "a compliance team fixes this." It is: **accepting real-world
+issuer signatures is a proof-system decision, and this stack made the opposite one.** That choice
+bought 358 ms proving and cheap on-chain verification. It cost interoperability with every
+credential that already exists.
+
+#### Revised estimate
+
+The engineering gap is **2–4 weeks**, not 12–18 months. I was wrong by an order of magnitude on the
+code, because I estimated instead of trying.
+
+What remains genuinely long is not engineering:
+- an issuer with legal standing willing to sign — relationship and liability, not code
+- regulatory certification — which, outside the EU, largely does not yet exist to obtain
+- and one fork in the road: keep BabyJubJub and issue your own credentials, or accept real ones and
+  rebuild on a different proof system
+
+That last item is the actual decision. It is worth more discussion than the other five combined.
+
 ### Score, if you want one
 
 | Dimension | Score | Why |
