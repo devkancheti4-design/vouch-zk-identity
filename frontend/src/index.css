@@ -155,3 +155,41 @@ footer { border-top: 1px solid var(--line); padding: 22px 26px; background: var(
 /* wallet backup / restore */
 .wallet-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
 .warn-text { color: #f0a58a; margin-top: 10px; }
+
+/* ---- "try to break it": visitor-driven leak explorer ---- */
+.break-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 16px 0 14px; }
+.break-grid label { display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; color: var(--muted); }
+.break-grid input, .break-grid select { background: var(--bg); color: var(--text); border: 1px solid var(--line2);
+  border-radius: 9px; padding: 9px 10px; font: inherit; font-size: 13.5px; }
+.break-grid input:focus, .break-grid select:focus { outline: none; border-color: var(--accent); }
+.break-grid .break-check { flex-direction: row; align-items: center; gap: 8px; align-self: end; padding-bottom: 9px; }
+.break-grid .break-check input { width: auto; }
+.break-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.break-legend { margin-top: 18px; }
+
+.attempt { border: 1px solid var(--line); border-radius: 12px; padding: 13px 15px; margin-top: 12px; background: var(--bg); }
+.attempt-h { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.attempt-n { font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--accent); }
+.sigs { display: grid; grid-template-columns: repeat(auto-fit, minmax(148px, 1fr)); gap: 6px; }
+.sig { display: flex; flex-direction: column; gap: 2px; padding: 7px 9px; border-radius: 8px;
+  border: 1px solid var(--line); background: var(--card); }
+.sig-k { font-size: 10.5px; color: var(--muted); letter-spacing: .03em; }
+.sig-v { font-size: 12px; }
+.sig.same { border-color: #1f4f36; }
+.sig.same .sig-k { color: var(--ok); }
+.sig.moved { border-color: var(--bad); background: #2a1419; }
+.sig.moved .sig-k { color: var(--bad); }
+.break-legend .sig { display: inline-flex; flex-direction: row; padding: 1px 7px; border-radius: 6px; font-size: 11.5px; }
+
+/* ---- linkability: what the chain gives away anyway ---- */
+.link-controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 16px 0 6px; }
+.link-toggle { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--muted); margin-left: auto; }
+.link-panes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px; }
+.link-pane { border: 1px solid var(--line); border-radius: 12px; padding: 13px 15px; background: var(--bg); }
+.link-pane h4 { margin: 0 0 8px; font-size: 12.5px; letter-spacing: .03em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.profile { border: 1px solid var(--bad); border-radius: 10px; padding: 11px 13px; margin-bottom: 10px; background: #2a1419; }
+.profile.solo { border-color: var(--line2); background: var(--card); }
+.profile-h { font-size: 12.5px; color: var(--text); margin-bottom: 6px; }
+.profile ul { margin: 0; padding-left: 18px; }
+.profile li { font-size: 12.5px; color: var(--text); margin: 2px 0; }
+@media (max-width: 760px) { .link-panes { grid-template-columns: 1fr; } .link-toggle { margin-left: 0; } }

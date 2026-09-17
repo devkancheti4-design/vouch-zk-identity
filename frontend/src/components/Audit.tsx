@@ -2,6 +2,8 @@ import { useState } from "react";
 import type { Address } from "viem";
 import { issue, proveClaim, today, toDays, type IssuerKey } from "../lib/credential";
 import { REGISTRY, deployment, hasChain, publicClient, short, vouchRegistryAbi } from "../lib/chain";
+import { BreakIt } from "./BreakIt";
+import { Linkability } from "./Linkability";
 
 interface Run { label: string; signals: string[] }
 
@@ -106,6 +108,8 @@ export function Audit({ issuerKey, holderAddr }: { issuerKey?: IssuerKey; holder
         </p>
       </div>
 
+      <BreakIt issuerKey={issuerKey} />
+
       <div className="card">
         <h3>What the chain actually stored</h3>
         <button className="btn" onClick={readChain}>Read the registry</button>
@@ -125,6 +129,8 @@ export function Audit({ issuerKey, holderAddr }: { issuerKey?: IssuerKey; holder
           that could return one.
         </p>
       </div>
+
+      <Linkability />
     </div>
   );
 }
