@@ -38,6 +38,26 @@ const evid = (s, t) => T(s, "evidence · " + t, { x: 0.5, y: 5.22, w: 9, h: 0.28
   s.addNotes("VOUCH is built for the brief: validate compliance claims without disclosing underlying sensitive data. Nine private inputs, none of which reach the public signals. Everything on these slides was measured in the repository.");
 }
 
+
+// --------------------------------------------- 1b what it does (plain words)
+{
+  const s = slide("What it does", "Before any of the cryptography: the whole idea in three sentences.");
+  const lines = [
+    ["A bank checks you once.", "It verifies your identity the boring, normal way — a single time — and signs the result. That signed note goes into your browser and stays there.", C.priv, "\u{1F3DB}"],
+    ["Your browser does the maths.", "When someone asks a question, your browser proves the answer from that note. The note itself never moves, never uploads, never leaves the device.", C.accent, "\u{1F9EE}"],
+    ["The shop learns only the answer.", "Whether you qualify: yes or no. Not your birthday, not your balance, not your name — and not enough to recognise you if you come back tomorrow.", C.pub, "\u{1F512}"],
+  ];
+  lines.forEach(([h, b, col, icon], i) => {
+    const y = 1.3 + i * 1.22;
+    box(s, 0.5, y, 9, 1.1, C.card, C.line);
+    T(s, icon, { x: 0.72, y: y + 0.3, w: 0.6, h: 0.5, fontSize: 24, align: "center" });
+    T(s, h, { x: 1.42, y: y + 0.14, w: 7.9, h: 0.38, fontFace: HEAD, fontSize: 19, bold: true, color: col });
+    T(s, b, { x: 1.42, y: y + 0.54, w: 7.75, h: 0.5, fontSize: 12.5, color: C.muted });
+  });
+  T(s, "Everything after this slide is just the detail of how the middle line is possible.", { x: 0.5, y: 5.0, w: 9, h: 0.35, fontSize: 12, color: C.muted, italic: true, align: "center" });
+  s.addNotes("Say these three sentences out loud and stop. If the room understands only this slide, they have understood the product. The rest is evidence.");
+}
+
 // ------------------------------------------------------- 2 the problem
 {
   const s = slide("Verification today means disclosure", "To prove one fact you hand over a document that reveals fifty.");
@@ -59,6 +79,57 @@ const evid = (s, t) => T(s, "evidence · " + t, { x: 0.5, y: 5.22, w: 9, h: 0.28
 
   T(s, "Nine of those ten numbers are values the verifier chose themselves. A value they already knew cannot tell them anything new about you.", { x: 0.5, y: 4.85, w: 9, h: 0.35, fontSize: 11, color: C.muted });
   s.addNotes("Lead with the everyday absurdity: a bar learns your address to check your age. The fix is not better data handling, it is not sending the data.");
+}
+
+
+// ------------------------------------- 2b how do we know? (sealed envelope)
+{
+  const s = slide("How do we know it really hides it?", "Anyone can claim their system is private. Here is the test that settles it.");
+  box(s, 0.5, 1.28, 9, 0.72, C.card, C.line2);
+  T(s, "Think of the proof as a sealed envelope. If your birthday were hidden inside it, then changing your birthday would change what is inside.", { x: 0.72, y: 1.28, w: 8.6, h: 0.72, fontSize: 13.5, italic: true, color: C.text, valign: "middle" });
+
+  const env = [["Prove it as someone born in 1990", C.priv], ["Prove it as someone born in 1961", C.pub]];
+  env.forEach(([label, col], i) => {
+    const x = 0.5 + i * 4.75;
+    box(s, x, 2.18, 4.25, 1.75, C.card, col);
+    T(s, label, { x: x + 0.22, y: 2.32, w: 3.85, h: 0.34, fontSize: 12.5, bold: true, color: col });
+    T(s, "\u{2709}", { x: x + 0.22, y: 2.66, w: 3.85, h: 0.55, fontSize: 30, align: "center" });
+    T(s, "what the shop receives", { x: x + 0.22, y: 3.22, w: 3.85, h: 0.26, fontSize: 10, color: C.muted, align: "center" });
+    T(s, "1499254576\u20262035118727553499\u2026", { x: x + 0.22, y: 3.46, w: 3.85, h: 0.3, fontFace: MONO, fontSize: 10, color: C.text, align: "center" });
+  });
+  T(s, "=", { x: 4.78, y: 2.9, w: 0.45, h: 0.4, fontSize: 24, color: C.ok, align: "center", bold: true });
+
+  box(s, 0.5, 4.08, 9, 0.78, C.card, "1F5A36");
+  T(s, [
+    { text: "They come out identical, down to the byte. ", options: { bold: true, color: C.ok } },
+    { text: "Nothing inside the envelope depended on the birthday, so nothing inside it can reveal one. The app runs this test live, with twenty others, in eight seconds.", options: { color: C.muted } },
+  ], { x: 0.72, y: 4.08, w: 8.6, h: 0.78, fontSize: 12.5, valign: "middle" });
+  evid(s, "Validation page, checks 3\u20139 \u00b7 circuits/test/zk.test.mjs suite 2");
+  s.addNotes("The envelope analogy is the one non-technical people remember. Use it before showing the table of public signals.");
+}
+
+// ------------------------------------------------ 2c what kind of maths
+{
+  const s = slide("What kind of maths is this?", "One sentence, then the three steps behind it.");
+  box(s, 0.5, 1.28, 9, 0.8, C.card, C.accent);
+  T(s, "It turns your credential into thousands of equations over a giant prime-number field, then proves you know numbers that satisfy all of them \u2014 without ever writing those numbers down.", { x: 0.72, y: 1.28, w: 8.6, h: 0.8, fontSize: 13.5, color: C.text, valign: "middle" });
+
+  const steps = [
+    ["1", "Your facts become equations", "The signature check, the age comparison, the balance comparison \u2014 all of it is rewritten as 10,273 equations that only balance when every claim is true.", C.priv],
+    ["2", "You solve them privately", "Your browser finds the solution using the real values: your birthday, your balance, your secret. This happens on your machine and nowhere else.", C.accent],
+    ["3", "You prove a solution exists", "Groth16 compresses \u201cI know a solution\u201d into 256 bytes. The verifier checks those bytes against the equations. It never sees the solution.", C.pub],
+  ];
+  steps.forEach(([n, h, b, col], i) => {
+    const x = 0.5 + i * 3.08;
+    box(s, x, 2.28, 2.9, 2.1, C.card, C.line);
+    s.addShape(pres.ShapeType.ellipse, { x: x + 0.2, y: 2.42, w: 0.3, h: 0.3, fill: { color: col } });
+    T(s, n, { x: x + 0.2, y: 2.42, w: 0.3, h: 0.3, fontSize: 12, bold: true, color: "06131A", align: "center", valign: "middle" });
+    T(s, h, { x: x + 0.2, y: 2.78, w: 2.55, h: 0.34, fontSize: 12.5, bold: true, color: col });
+    T(s, b, { x: x + 0.2, y: 3.14, w: 2.55, h: 1.1, fontSize: 10.5, color: C.muted });
+  });
+  T(s, "\u201cWithout writing them down\u201d is the whole trick: the proof is built FROM your data but carries none of it, the way a fingerprint proves a hand touched a glass without being a hand.", { x: 0.5, y: 4.55, w: 9, h: 0.5, fontSize: 11.5, color: C.muted, italic: true });
+  evid(s, "10,273 constraints \u00b7 9 private inputs \u00b7 256-byte proof \u00b7 553 ms to build");
+  s.addNotes("If someone asks how it works mathematically, this is the answer at the right altitude. Do not go deeper unless they push.");
 }
 
 // ------------------------------------------------------- 3 the brief
