@@ -1,57 +1,57 @@
 ▶ 1 — a proof can be made, and it verifies
-  ✔ an eligible holder proves age, solvency and accreditation at once (677.226083ms)
-✔ 1 — a proof can be made, and it verifies (1414.133625ms)
+  ✔ an eligible holder proves age, solvency and accreditation at once (680.132333ms)
+✔ 1 — a proof can be made, and it verifies (1422.708542ms)
 ▶ 2 — ZERO PRIVATE DATA IN THE PUBLIC SIGNALS
-  ✔ changing dobDays changes NO public signal (999.407ms)
-  ✔ changing balance changes NO public signal (994.950125ms)
-  ✔ changing countryCode changes NO public signal (987.61125ms)
-  ✔ changing flags changes NO public signal (983.680791ms)
-  ✔ changing expiresAt changes NO public signal (971.216875ms)
-  ✔ no public signal equals a high-entropy private value (485.535541ms)
-  ✔ the public signals are exactly the policy, the context and the nullifier — nothing else (479.538542ms)
-  ✔ two DIFFERENT people proving the SAME policy are indistinguishable but for the nullifier (993.757625ms)
-  ✔ the proof itself is randomised: the same statement twice gives different proofs (921.221167ms)
-✔ 2 — ZERO PRIVATE DATA IN THE PUBLIC SIGNALS (7818.711917ms)
+  ✔ changing dobDays changes NO public signal (1006.989417ms)
+  ✔ changing balance changes NO public signal (992.322417ms)
+  ✔ changing countryCode changes NO public signal (979.576208ms)
+  ✔ changing flags changes NO public signal (988.340875ms)
+  ✔ changing expiresAt changes NO public signal (966.7845ms)
+  ✔ no public signal equals a high-entropy private value (484.110708ms)
+  ✔ the public signals are exactly the policy, the context and the nullifier — nothing else (487.502666ms)
+  ✔ two DIFFERENT people proving the SAME policy are indistinguishable but for the nullifier (1010.279083ms)
+  ✔ the proof itself is randomised: the same statement twice gives different proofs (932.81125ms)
+✔ 2 — ZERO PRIVATE DATA IN THE PUBLIC SIGNALS (7850.538583ms)
 ▶ 3 — the nullifier: replay-detectable, and unlinkable across verifiers
-  ✔ same holder, same context → the same nullifier (a verifier can reject a second use) (910.207667ms)
-  ✔ same holder, different context → different nullifiers (two verifiers cannot collude) (898.621833ms)
-✔ 3 — the nullifier: replay-detectable, and unlinkable across verifiers (1809.472958ms)
+  ✔ same holder, same context → the same nullifier (a verifier can reject a second use) (904.508ms)
+  ✔ same holder, different context → different nullifiers (two verifiers cannot collude) (922.995167ms)
+✔ 3 — the nullifier: replay-detectable, and unlinkable across verifiers (1828.207375ms)
 ERROR:  4 Error in template Vouch_322 line: 97
 
 ▶ 4 — a claim that is not true cannot be proven
-  ✔ underage: no proof exists (158.438167ms)
+  ✔ underage: no proof exists (155.668708ms)
 ERROR:  4 Error in template Vouch_322 line: 103
 
-  ✔ insufficient balance: no proof exists (158.111667ms)
+  ✔ insufficient balance: no proof exists (160.318042ms)
 ERROR:  4 Error in template Vouch_322 line: 108
 
-  ✔ not accredited: no proof exists (157.898209ms)
+  ✔ not accredited: no proof exists (158.446541ms)
 ERROR:  4 Error in template Vouch_322 line: 91
 
-  ✔ expired credential: no proof exists (154.661459ms)
-  ✔ but the SAME holder can still prove a weaker policy (491.868792ms)
-✔ 4 — a claim that is not true cannot be proven (1121.431667ms)
+  ✔ expired credential: no proof exists (155.023417ms)
+  ✔ but the SAME holder can still prove a weaker policy (509.018792ms)
+✔ 4 — a claim that is not true cannot be proven (1138.994917ms)
 ERROR:  4 Error in template ForceEqualIfEnabled_243 line: 56
 Error in template EdDSAPoseidonVerifier_244 line: 117
 Error in template Vouch_322 line: 85
 
 ▶ 5 — a credential cannot be forged, stolen or altered
-  ✔ a rogue issuer's signature does not satisfy the real issuer's key (153.961125ms)
-  ✔ a rogue issuer CAN be used if a verifier foolishly names it — the key is public and chosen by the verifier (480.608958ms)
+  ✔ a rogue issuer's signature does not satisfy the real issuer's key (155.501ms)
+  ✔ a rogue issuer CAN be used if a verifier foolishly names it — the key is public and chosen by the verifier (479.314208ms)
 ERROR:  4 Error in template ForceEqualIfEnabled_243 line: 56
 Error in template EdDSAPoseidonVerifier_244 line: 117
 Error in template Vouch_322 line: 85
 
-  ✔ altering an attribute after issuance invalidates the signature (156.058375ms)
+  ✔ altering an attribute after issuance invalidates the signature (154.951417ms)
 ERROR:  4 Error in template ForceEqualIfEnabled_243 line: 56
 Error in template EdDSAPoseidonVerifier_244 line: 117
 Error in template Vouch_322 line: 85
 
-  ✔ a stolen credential is useless without the holder's secret (156.985ms)
-✔ 5 — a credential cannot be forged, stolen or altered (947.999916ms)
+  ✔ a stolen credential is useless without the holder's secret (156.192875ms)
+✔ 5 — a credential cannot be forged, stolen or altered (946.378875ms)
 ▶ 6 — the policy is bound into the proof
-  ✔ a proof for a weak policy does not verify against a strong one (489.327584ms)
-✔ 6 — the policy is bound into the proof (489.482666ms)
+  ✔ a proof for a weak policy does not verify against a strong one (494.178875ms)
+✔ 6 — the policy is bound into the proof (494.350167ms)
 ℹ tests 22
 ℹ suites 6
 ℹ pass 22
@@ -59,4 +59,4 @@ Error in template Vouch_322 line: 85
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 14252.793875
+ℹ duration_ms 14390.234083

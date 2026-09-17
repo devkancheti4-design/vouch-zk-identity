@@ -116,6 +116,32 @@ useless without the holder's secret; altering an attribute after issuance breaks
 rogue issuer cannot impersonate the real one; the nullifier is stable within one verifier and
 unlinkable across two; and the proof is randomised, so proving twice does not produce the same bytes.
 
+## Where the data lives
+
+Three stores, and only one of them ever holds an attribute.
+
+| Store | Holds | Lifetime |
+|---|---|---|
+| The holder's browser | the secret, and the credential in full | until site data is cleared |
+| The issuer | that it issued to a subject commitment, and when | its own records |
+| The chain | a spent-nullifier bit, and one boolean per address per policy | permanent |
+
+The attributes a user types — date of birth, balance, country, accreditation — are written to
+`localStorage` on their own machine and are never transmitted. The issuer signs them and forgets
+them; it retains a commitment, not the values behind it. The chain never sees them at all: what it
+records is that *some* holder satisfied policy *n*, which is the whole point.
+
+The wallet is a single record under one key, written in one call. It used to be two keys written
+minutes apart — the secret on first load, the credential after issuance — so a browser that evicted
+one and kept the other (Safari caps script-written storage at seven days) left behind a credential
+that could never be proven again. `frontend/test/wallet.test.mjs` covers that migration and nine
+other ways the store can go wrong: corrupt JSON, a non-numeric secret, a half-written credential, an
+orphaned credential, a blocked `localStorage` in private mode, and an export/import round-trip.
+
+Because there is no server-side copy, there is no server-side recovery. The backup file on the
+wallet page is the recovery path and the holder keeps it. It carries the secret in the clear, so it
+is exactly as sensitive as the credential — that is the honest cost of no one else holding your data.
+
 ## What it does not do
 
 The trusted setup is a local one-contributor ceremony with fixed entropy so the artifacts are

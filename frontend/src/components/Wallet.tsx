@@ -1,4 +1,6 @@
+import { useRef, useState } from "react";
 import { SHOPS, type Page, type PolicyMeta } from "../App";
+import { downloadWallet, importWallet } from "../lib/wallet";
 import { deployment } from "../lib/chain";
 import { fromDays, type Credential } from "../lib/credential";
 
@@ -8,6 +10,9 @@ const age = (dobDays: number) => Math.floor((Date.now() / 86400000 - dobDays) / 
 export function Wallet({ cred, secret, clearedMap, onReset, setPage }: {
   cred?: Credential; secret: bigint; clearedMap: Record<number, boolean>; onReset: () => void; setPage: (p: Page) => void;
 }) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [restore, setRestore] = useState<string>();
+
   if (!cred) {
     return (
       <div className="narrow">
@@ -71,8 +76,38 @@ export function Wallet({ cred, secret, clearedMap, onReset, setPage }: {
       </div>
 
       <div className="card">
+        <h3>Back up this wallet</h3>
+        <p className="muted small">
+          Your credential and secret are saved in this browser and nowhere else. We hold no copy,
+          so we cannot restore one for you &mdash; that is the same property that stops us from
+          reading your data. The backup file is the recovery path, and you keep it. It contains
+          your secret in the clear: anyone holding it can prove your claims, so treat it like the
+          credential itself.
+        </p>
+        <div className="wallet-actions">
+          <button className="btn" onClick={downloadWallet}>Download backup</button>
+          <button className="btn" onClick={() => fileRef.current?.click()}>Restore from file</button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="application/json,.json"
+            style={{ display: "none" }}
+            onChange={async (e) => {
+              const f = e.target.files?.[0];
+              e.target.value = "";
+              if (!f) return;
+              const err = importWallet(await f.text());
+              if (err) { setRestore(err); return; }
+              window.location.reload();
+            }}
+          />
+        </div>
+        {restore && <p className="small warn-text">{restore}</p>}
+      </div>
+
+      <div className="card">
         <h3>Wallet controls</h3>
-        <p className="muted small">Clearing the wallet destroys the credential and the secret. There is no backup and no recovery, because neither was ever sent anywhere.</p>
+        <p className="muted small">Erasing destroys the credential and the secret in this browser. If you have not downloaded a backup, they are gone for good.</p>
         <button className="btn warn" onClick={onReset}>Erase this wallet</button>
       </div>
     </div>

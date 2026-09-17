@@ -36,6 +36,12 @@ else
   line "dApp typecheck" "FAILED (see docs/typecheck.txt)"; fail=1
 fi
 
+if ( cd "$ROOT/frontend" && npx tsx --test test/wallet.test.mjs > "$ROOT/docs/wallet-tests.txt" 2>&1 ); then
+  line "wallet storage" "$(grep -cE '^✔' "$ROOT/docs/wallet-tests.txt") tests passing, 0 failing"
+else
+  line "wallet storage" "FAILED (see docs/wallet-tests.txt)"; fail=1
+fi
+
 echo
 if [ $fail -eq 0 ]; then echo "  ALL CHECKS PASSED"; else echo "  SOME CHECKS FAILED"; fi
 exit $fail
