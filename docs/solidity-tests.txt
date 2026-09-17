@@ -15,5 +15,6 @@ GAS clear() incl. pairing check 381755
     ✔ test_AProofFromAnotherIssuerIsRefused()
     ✔ test_AProofForAWeakerPolicyIsRefused()
 
-10 passing (10 solidity)
+
+  10 passing
 

@@ -1,14 +1,14 @@
-✔ a credential from ANY accredited issuer proves (2966.497125ms)
-✔ the verifier CANNOT tell which issuer vouched — that is the new part (2090.0035ms)
+✔ a credential from ANY accredited issuer proves (2963.507083ms)
+✔ the verifier CANNOT tell which issuer vouched — that is the new part (2088.669166ms)
 ERROR:  4 Error in template MerkleInclusion_72 line: 68
 Error in template VouchShard_324 line: 114
 
-✔ an issuer OUTSIDE the accredited set cannot prove, even with a valid signature (62.175334ms)
+✔ an issuer OUTSIDE the accredited set cannot prove, even with a valid signature (63.882083ms)
 ERROR:  4 Error in template MerkleInclusion_72 line: 68
 Error in template VouchShard_324 line: 114
 
-✔ removing an issuer from the set revokes everything they signed (80.660041ms)
-✔ the set root IS public, so a verifier pins which accreditation body it trusts (531.471917ms)
+✔ removing an issuer from the set revokes everything they signed (84.004666ms)
+✔ the set root IS public, so a verifier pins which accreditation body it trusts (527.981ms)
 ℹ tests 5
 ℹ suites 0
 ℹ pass 5
@@ -16,4 +16,4 @@ Error in template VouchShard_324 line: 114
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 7405.226917
+ℹ duration_ms 7394.092541
