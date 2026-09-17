@@ -21,8 +21,14 @@ export function Home({ setPage, hasCred, clearedMap }: { setPage: (p: Page) => v
           <button className="btn primary big" onClick={() => setPage(hasCred ? "shop" : "verify")}>
             {hasCred ? "Try it in a real shop" : "Get verified — it takes one click"}
           </button>
-          <button className="btn big" onClick={() => setPage("audit")}>Show me it really hides the data</button>
+          <button className="btn big" onClick={() => setPage("validate")}>Run the 21 checks live</button>
         </div>
+        <p className="brief-line">
+          <b>The brief:</b> “construct a privacy-focused identity verification system utilising ZKPs to
+          <b> validate</b> compliance claims without disclosing underlying sensitive data.”
+          That is exactly what this does, and the <button className="link" onClick={() => setPage("validate")}>Validation</button> page
+          proves each line of it with live tests.
+        </p>
       </section>
 
       <section className="three">

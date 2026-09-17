@@ -12,9 +12,10 @@ import { GetVerified } from "./components/GetVerified";
 import { Wallet } from "./components/Wallet";
 import { Marketplace } from "./components/Marketplace";
 import { Audit } from "./components/Audit";
+import { Validation } from "./components/Validation";
 import { BuiltWith } from "./components/BuiltWith";
 
-export type Page = "home" | "verify" | "wallet" | "shop" | "audit" | "built";
+export type Page = "home" | "verify" | "wallet" | "shop" | "audit" | "validate" | "built";
 export interface PolicyMeta {
   policyId: number; name: string; minAgeDays: number; minBalance: number;
   requireAge: boolean; requireBalance: boolean; requireAccredited: boolean;
@@ -86,7 +87,7 @@ export default function App() {
 
   const nav: [Page, string][] = [
     ["home", "How it works"], ["verify", "Get verified"], ["wallet", "My wallet"],
-    ["shop", "Where it's used"], ["audit", "What leaks?"], ["built", "How it's built"],
+    ["shop", "Where it's used"], ["validate", "Validation"], ["audit", "What leaks?"], ["built", "How it's built"],
   ];
 
   return (
@@ -120,6 +121,7 @@ export default function App() {
         {page === "wallet" && <Wallet cred={cred} secret={secret} clearedMap={clearedMap} onReset={onReset} setPage={setPage} />}
         {page === "shop" && <Marketplace cred={cred} clearedMap={clearedMap} proveAndClear={proveAndClear} setPage={setPage} />}
         {page === "audit" && <Audit issuerKey={issuerKey} holderAddr={holderAddr} />}
+        {page === "validate" && <Validation issuerKey={issuerKey} holderAddr={holderAddr} />}
         {page === "built" && <BuiltWith />}
       </main>
 

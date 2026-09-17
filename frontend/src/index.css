@@ -132,3 +132,22 @@ footer { border-top: 1px solid var(--line); padding: 22px 26px; background: var(
 .why b { display: block; margin-bottom: 5px; font-size: 13.5px; } .why span { font-size: 13px; }
 .strip { grid-template-columns: repeat(4, 1fr); }
 @media (max-width: 1000px) { .why-grid { grid-template-columns: 1fr; } .strip { grid-template-columns: repeat(2, 1fr); } }
+/* the brief + live test runner */
+.brief-line { max-width: 680px; margin: 22px auto 0; color: var(--muted); font-size: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; }
+.brief-line b { color: var(--text); }
+.brief { display: flex; flex-direction: column; gap: 14px; margin-top: 14px; }
+.brief-row { display: flex; gap: 14px; align-items: flex-start; background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+.tick { width: 26px; height: 26px; border-radius: 50%; background: #0f3b36; color: var(--ok); display: grid; place-items: center; font-weight: 700; flex: none; }
+.quote { font-style: italic; color: var(--text); margin-bottom: 6px; }
+.done { color: var(--muted); font-size: 13.5px; }
+.where { color: var(--muted); font-size: 11.5px; margin-top: 6px; opacity: .8; }
+.run-h { display: flex; gap: 18px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
+.run-h > div { flex: 1; min-width: 300px; }
+.tgroup { margin-top: 18px; }
+.tgroup-h { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 2px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+.tcheck { display: flex; gap: 12px; align-items: flex-start; padding: 10px 12px; border-radius: 10px; background: var(--bg); border: 1px solid var(--line); margin-bottom: 6px; }
+.tcheck.pass { border-color: #1f5a36; } .tcheck.fail { border-color: #6b2b33; } .tcheck.running { border-color: var(--line2); }
+.tmark { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; flex: none; background: #16232f; color: var(--muted); }
+.tcheck.pass .tmark { background: #0f3b36; color: var(--ok); } .tcheck.fail .tmark { background: #3a1a1f; color: var(--bad); }
+.tbody { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.tbody b { font-size: 13.5px; font-weight: 600; }
