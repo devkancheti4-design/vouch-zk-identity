@@ -45,6 +45,35 @@ cd frontend && npm run dev -- --port 5176       # terminal 4 — the site on :51
 Then: **Get verified** (the server signs your credential) → **Where it's used** (a shop demands a
 claim; your browser proves it and the chain verifies it) → **What leaks?** (the honest test).
 
+## Deploy it
+
+The app is Vercel-ready. The frontend is a static Vite build, the issuer runs as serverless
+functions under `frontend/api/`, and the circuit artifacts are committed so the browser can prove.
+
+```bash
+cd frontend && vercel deploy --prod --scope <your-team>
+```
+
+That gives you a working public site immediately: credential issuance, in-browser proving,
+client-side verification, and the full 21-check validation suite. The header will read
+**"verification: client-side only"**, which is honest — no registry is configured yet.
+
+To light up the on-chain half, deploy the contracts to a public testnet and set three
+environment variables in the Vercel project:
+
+| variable | example |
+|---|---|
+| `VITE_RPC_URL` | `https://sepolia.base.org` |
+| `VITE_REGISTRY` | the `VouchRegistry` address from your deploy |
+| `VITE_CHAIN_ID` | `84532` |
+
+Optionally set `ISSUER_SECRET` to control the signing key (it defaults to a fixed demo label, which
+is reproducible and therefore not secret). In production that key belongs in a KMS, not an
+environment variable.
+
+**On a public deployment VOUCH holds no keys.** Locally it signs with the Hardhat dev accounts;
+deployed, it asks the visitor's own wallet to submit the proof.
+
 ## The numbers, all measured
 
 | | |
