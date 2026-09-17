@@ -1,7 +1,13 @@
 /** Client for the issuer API — the service a bank or KYC provider runs. */
 import type { Credential } from "./credential";
 
-const BASE = (import.meta.env.VITE_ISSUER_API as string | undefined) ?? "http://localhost:4000";
+/**
+ * Where the issuer lives.
+ * Deployed, it is this same origin (Vercel serverless functions under /api).
+ * Locally it is the Express server on :4000, unless VITE_ISSUER_API says otherwise.
+ */
+const isLocalHost = typeof window !== "undefined" && /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname);
+const BASE = (import.meta.env.VITE_ISSUER_API as string | undefined) ?? (isLocalHost ? "http://localhost:4000" : "");
 
 export interface IssuerInfo { name: string; pubX: string; pubY: string; issuedCount: number }
 

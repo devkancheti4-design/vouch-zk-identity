@@ -4,12 +4,12 @@ import type { Credential, ProofBundle } from "../lib/credential";
 import { PUBLIC_SIGNAL_NAMES } from "../lib/credential";
 import { short } from "../lib/chain";
 
-type State = { phase: "idle" | "proving" | "verifying" | "done" | "error"; bundle?: ProofBundle; gas?: string; error?: string };
+type State = { phase: "idle" | "proving" | "verifying" | "done" | "error"; bundle?: ProofBundle; gas?: string; onChain?: boolean; error?: string };
 
 export function Marketplace({ cred, clearedMap, proveAndClear, setPage }: {
   cred?: Credential;
   clearedMap: Record<number, boolean>;
-  proveAndClear: (policyId: number) => Promise<{ bundle: ProofBundle; gas: string }>;
+  proveAndClear: (policyId: number) => Promise<{ bundle: ProofBundle; gas?: string; onChain: boolean }>;
   setPage: (p: Page) => void;
 }) {
   const [states, setStates] = useState<Record<number, State>>({});
@@ -20,9 +20,9 @@ export function Marketplace({ cred, clearedMap, proveAndClear, setPage }: {
     try {
       // the proof is built first, in the browser; only then does anything touch the network
       const started = performance.now();
-      const { bundle, gas } = await proveAndClear(shop.policyId);
+      const { bundle, gas, onChain } = await proveAndClear(shop.policyId);
       void started;
-      set(shop.policyId, { phase: "done", bundle, gas });
+      set(shop.policyId, { phase: "done", bundle, gas, onChain });
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       set(shop.policyId, {
@@ -80,13 +80,17 @@ export function Marketplace({ cred, clearedMap, proveAndClear, setPage }: {
 
                 {st.bundle && (
                   <details className="receipt">
-                    <summary>What this shop received ({st.gas ? Number(st.gas).toLocaleString() : "…"} gas)</summary>
+                    <summary>What this shop received{st.gas ? ` (${Number(st.gas).toLocaleString()} gas on-chain)` : " (verified in your browser)"}</summary>
                     <div className="sig-list">
                       {st.bundle.publicSignals.map((v, i) => (
                         <div className="row" key={i}><span className="k">{PUBLIC_SIGNAL_NAMES[i]}</span><span className="v mono">{short(v, 22)}</span></div>
                       ))}
                     </div>
-                    <p className="muted small">Proved in {st.bundle.ms.toFixed(0)} ms in your browser. Not one of these values is a fact about you.</p>
+                    <p className="muted small">
+                      Proved in {st.bundle.ms.toFixed(0)} ms in your browser and verified before anything was sent.
+                      {st.onChain === false && " No registry is configured on this deployment, so the record was not written to a chain — the proof and its verification are unaffected."}
+                      {" "}Not one of these values is a fact about you.
+                    </p>
                   </details>
                 )}
               </div>

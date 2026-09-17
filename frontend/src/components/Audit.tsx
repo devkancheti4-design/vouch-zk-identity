@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Address } from "viem";
 import { issue, proveClaim, today, toDays, type IssuerKey } from "../lib/credential";
-import { REGISTRY, deployment, publicClient, short, vouchRegistryAbi } from "../lib/chain";
+import { REGISTRY, deployment, hasChain, publicClient, short, vouchRegistryAbi } from "../lib/chain";
 
 interface Run { label: string; signals: string[] }
 
@@ -10,7 +10,7 @@ interface Run { label: string; signals: string[] }
  * reaches the public signals. It is settled here the only way it can be — by proving the same
  * statement from wildly different private data and comparing the output.
  */
-export function Audit({ issuerKey, holderAddr }: { issuerKey?: IssuerKey; holderAddr: Address }) {
+export function Audit({ issuerKey, holderAddr }: { issuerKey?: IssuerKey; holderAddr?: Address }) {
   const [rows, setRows] = useState<Run[]>([]);
   const [busy, setBusy] = useState(false);
   const [verdict, setVerdict] = useState<{ ok: boolean; text: string }>();
@@ -61,6 +61,7 @@ export function Audit({ issuerKey, holderAddr }: { issuerKey?: IssuerKey; holder
   };
 
   const readChain = async () => {
+    if (!hasChain || !publicClient || !holderAddr) { setChain([]); return; }
     const out = [];
     for (const p of deployment.policies as { policyId: number; name: string }[]) {
       const count = (await publicClient.readContract({ address: REGISTRY, abi: vouchRegistryAbi, functionName: "clearedCount", args: [BigInt(p.policyId)] })) as bigint;

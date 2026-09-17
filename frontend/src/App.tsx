@@ -5,7 +5,7 @@ import {
   proveClaim, subjectOf, today, fromDays,
   type Credential, type IssuerKey, type Policy, type ProofBundle,
 } from "./lib/credential";
-import { REGISTRY, deployment, publicClient, short, vouchRegistryAbi, walletFor } from "./lib/chain";
+import { CHAIN_LABEL, REGISTRY, deployment, hasChain, holderAddress, publicClient, signer, vouchRegistryAbi } from "./lib/chain";
 import { HOLDER_WALLET_INDEX, clearWallet, holderSecret, loadCredential, saveCredential } from "./lib/wallet";
 import { Home } from "./components/Home";
 import { GetVerified } from "./components/GetVerified";
@@ -38,11 +38,13 @@ export default function App() {
   const [cred, setCred] = useState<Credential | undefined>(() => loadCredential());
   const [secret] = useState<bigint>(() => holderSecret());
   const [clearedMap, setClearedMap] = useState<Record<number, boolean>>({});
-  const holderAddr = deployment.holders[HOLDER_WALLET_INDEX - 1] as Address;
+  const [holderAddr, setHolderAddr] = useState<Address>();
+  useEffect(() => { holderAddress(HOLDER_WALLET_INDEX).then(setHolderAddr).catch(() => {}); }, []);
 
   useEffect(() => { getIssuer().then(setIssuerInfo).catch((e) => setIssuerErr(String(e.message ?? e))); }, []);
 
   const refreshCleared = useCallback(async () => {
+    if (!hasChain || !publicClient || !holderAddr) return;
     const out: Record<number, boolean> = {};
     for (const p of deployment.policies as PolicyMeta[]) {
       out[p.policyId] = (await publicClient.readContract({
@@ -69,11 +71,16 @@ export default function App() {
     };
   };
 
-  /** the whole flow a shop triggers: prove in the browser, then verify on-chain */
-  const proveAndClear = async (policyId: number): Promise<{ bundle: ProofBundle; gas: string }> => {
+  /**
+   * The whole flow a shop triggers. The proof, and its verification, always happen in the
+   * browser. The on-chain record is added only when a registry is configured.
+   */
+  const proveAndClear = async (policyId: number): Promise<{ bundle: ProofBundle; gas?: string; onChain: boolean }> => {
     if (!cred || !issuerKey) throw new Error("no credential in this wallet");
     const bundle = await proveClaim(cred, secret, issuerKey, policyFor(policyId));
-    const wc = walletFor(HOLDER_WALLET_INDEX);
+    if (!bundle.localOk) throw new Error("the proof failed its own verification");
+    if (!hasChain || !publicClient) return { bundle, onChain: false };
+    const wc = await signer(HOLDER_WALLET_INDEX);
     const { a, b, c, pub } = bundle.calldata;
     const hash = await wc.writeContract({
       address: REGISTRY, abi: vouchRegistryAbi, functionName: "clear",
@@ -82,7 +89,7 @@ export default function App() {
     const r = await publicClient.waitForTransactionReceipt({ hash });
     if (r.status !== "success") throw new Error("the registry rejected the proof");
     await refreshCleared();
-    return { bundle, gas: r.gasUsed.toString() };
+    return { bundle, gas: r.gasUsed.toString(), onChain: true };
   };
 
   const nav: [Page, string][] = [
@@ -108,7 +115,7 @@ export default function App() {
           <span className={issuerInfo ? "chip ok" : "chip bad"}>
             {issuerInfo ? `issuer online · ${issuerInfo.issuedCount} issued` : issuerErr ? "issuer offline" : "connecting…"}
           </span>
-          <span className="chip">chain {short(REGISTRY, 10)}</span>
+          <span className={hasChain ? "chip" : "chip bad"}>{hasChain ? CHAIN_LABEL : "verification: client-side only"}</span>
         </div>
       </header>
 

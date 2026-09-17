@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Address } from "viem";
 import { issue, proveClaim, subjectOf, today, toDays, type IssuerKey, type Policy } from "../lib/credential";
-import { REGISTRY, deployment, publicClient, short, vouchRegistryAbi } from "../lib/chain";
+import { REGISTRY, deployment, hasChain, publicClient, short, vouchRegistryAbi } from "../lib/chain";
 
 /**
  * VALIDATION — the brief, and the live evidence for each line of it.
@@ -46,7 +46,7 @@ const BRIEF = [
   },
 ];
 
-export function Validation({ issuerKey, holderAddr }: { issuerKey?: IssuerKey; holderAddr: Address }) {
+export function Validation({ issuerKey, holderAddr }: { issuerKey?: IssuerKey; holderAddr?: Address }) {
   const [checks, setChecks] = useState<Check[]>([]);
   const [busy, setBusy] = useState(false);
   const [summary, setSummary] = useState<{ pass: number; fail: number; ms: number }>();
@@ -202,12 +202,14 @@ export function Validation({ issuerKey, holderAddr }: { issuerKey?: IssuerKey; h
     });
     await step(GROUPS[5], "A nullifier that has been used is refused a second time", "replay protection is live on-chain", async () => {
       if (!baseSignals.length) throw new Error("no proof to check");
+      if (!hasChain || !publicClient) return "no registry configured — the circuit still emits the nullifier that makes this enforceable";
       const spent = (await publicClient.readContract({
         address: REGISTRY, abi: vouchRegistryAbi, functionName: "spent", args: [BigInt(baseSignals[0])],
       })) as boolean;
       return spent ? "this nullifier is already burned on-chain" : "unused nullifier — the registry would accept it once, and only once";
     });
     await step(GROUPS[5], "The chain's record of this wallet is a boolean", "clearance without identity", async () => {
+      if (!hasChain || !publicClient || !holderAddr) return "no registry configured — nothing is recorded anywhere";
       const bits: string[] = [];
       for (const p of deployment.policies as { policyId: number; name: string }[]) {
         const ok = (await publicClient.readContract({
