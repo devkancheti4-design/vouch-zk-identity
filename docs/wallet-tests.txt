@@ -1,13 +1,13 @@
-✔ a new browser gets a valid secret and persists it across reloads (6.743625ms)
-✔ saving a credential never writes it without the secret (0.899ms)
-✔ a pre-v1 two-key wallet migrates without losing the credential (0.933834ms)
-✔ an orphaned legacy credential (secret evicted) does not resurrect as unprovable (0.878875ms)
-✔ corrupt JSON falls back to a working wallet instead of throwing (0.900708ms)
-✔ a record with a non-numeric secret is rejected, not loaded (1.071917ms)
-✔ a half-written credential is dropped but the secret is kept (0.962292ms)
-✔ export then import round-trips into a different browser (1.904333ms)
-✔ importing a junk file reports an error and leaves the good wallet intact (0.787417ms)
-✔ blocked storage (private mode) still yields a usable session wallet (0.76725ms)
+✔ a new browser gets a valid secret and persists it across reloads (6.467ms)
+✔ saving a credential never writes it without the secret (0.92825ms)
+✔ a pre-v1 two-key wallet migrates without losing the credential (0.877ms)
+✔ an orphaned legacy credential (secret evicted) does not resurrect as unprovable (0.996875ms)
+✔ corrupt JSON falls back to a working wallet instead of throwing (1.239084ms)
+✔ a record with a non-numeric secret is rejected, not loaded (0.963209ms)
+✔ a half-written credential is dropped but the secret is kept (0.961292ms)
+✔ export then import round-trips into a different browser (1.738125ms)
+✔ importing a junk file reports an error and leaves the good wallet intact (0.764333ms)
+✔ blocked storage (private mode) still yields a usable session wallet (1.3495ms)
 ℹ tests 10
 ℹ suites 0
 ℹ pass 10
@@ -15,4 +15,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 209.9145
+ℹ duration_ms 218.115542
