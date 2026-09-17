@@ -1,0 +1,19 @@
+No contracts to compile
+
+Running Solidity tests
+
+  test/VouchRegistry.t.sol:VouchRegistryTest
+    ✔ test_TheVerifierAcceptsARealProof()
+    ✔ test_TheSameNullifierCannotBeUsedTwice()
+    ✔ test_RetiredPolicyRefuses()
+    ✔ test_OnlyAdminPublishes()
+    ✔ test_OneAddressClearsOnce()
+GAS clear() incl. pairing check 381755
+    ✔ test_ClearRecordsABooleanAndNothingElse()
+    ✔ test_ATamperedPublicSignalBreaksThePairingCheck()
+    ✔ test_AStaleClockIsRefused()
+    ✔ test_AProofFromAnotherIssuerIsRefused()
+    ✔ test_AProofForAWeakerPolicyIsRefused()
+
+10 passing (10 solidity)
+

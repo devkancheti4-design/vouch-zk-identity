@@ -2,7 +2,7 @@
  * The zero-knowledge audit. Every assertion here runs against REAL Groth16 proofs produced by
  * the compiled circuit, not against a model of it.
  */
-import { test, describe, before } from "node:test";
+import { test, describe, before, after } from "node:test";
 import assert from "node:assert/strict";
 import * as snarkjs from "snarkjs";
 import fs from "node:fs";
@@ -27,6 +27,14 @@ const POLICY = () => ({ nowDays: NOW, minAgeDays: 18 * 365, minBalance: 10000, r
 // two people whose private facts differ in every field
 const ALICE = { secret: 111111111111111111111n, attrs: () => ({ dobDays: toDays("1990-01-15"), balance: 250000, countryCode: 826, flags: 1, expiresAt: NOW + 365 }) };
 const BOB = { secret: 999999999999999999999n, attrs: () => ({ dobDays: toDays("2000-06-30"), balance: 12345, countryCode: 276, flags: 1, expiresAt: NOW + 30 }) };
+
+// snarkjs starts a WASM worker pool for the BN254 curve and never shuts it down, so without
+// this the suite reports every result and then hangs forever waiting for the event loop to
+// drain. That is what stalled `verify.sh`.
+after(async () => {
+  const c = globalThis.curve_bn128;
+  if (c && typeof c.terminate === "function") await c.terminate();
+});
 
 before(async () => {
   issuerKey = keyFromLabel("Demo KYC Provider");
