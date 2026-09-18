@@ -1,7 +1,15 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { ISSUER_LABEL, cors } from "./_issuer";
 
+/**
+ * Deliberately depends on nothing. If this answers and /api/issuer does not, the fault is in
+ * the crypto stack rather than in the deployment -- which is the one thing you cannot tell
+ * from FUNCTION_INVOCATION_FAILED alone.
+ */
 export default function handler(_req: VercelRequest, res: VercelResponse) {
-  cors(res);
-  res.status(200).json({ ok: true, issuer: ISSUER_LABEL });
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.status(200).json({
+    ok: true,
+    issuer: process.env.ISSUER_LABEL ?? "Demo KYC Provider",
+    node: process.version,
+  });
 }
