@@ -6,11 +6,10 @@
  * honest about what it is. Set ISSUER_SECRET in the Vercel project to change it.
  */
 import { createHash } from "node:crypto";
-// circomlibjs is imported LAZILY, inside issuer(). At the top level it loads for every function
-// in this directory -- including /api/health, which needs none of it -- so a failure to load it
-// crashed the whole function before any handler ran, surfacing only as FUNCTION_INVOCATION_FAILED
-// with no message. Deferring it means health stays trivial and a real failure arrives as a 500
-// that says what went wrong.
+// Static, so Vercel's dependency tracer bundles it. Only /api/issue imports this module now:
+// health needs nothing, and /api/issuer reads a key derived at build time, so a runtime that
+// cannot load a curve no longer takes issuer discovery down with it.
+import { buildEddsa, buildPoseidon } from "circomlibjs";
 
 export const ISSUER_LABEL = process.env.ISSUER_LABEL ?? "Demo KYC Provider";
 const ISSUER_SECRET = process.env.ISSUER_SECRET ?? ISSUER_LABEL;
@@ -20,7 +19,6 @@ let cached: { eddsa: any; poseidon: any; F: any; priv: Buffer; pub: { x: string;
 
 export async function issuer() {
   if (cached) return cached;
-  const { buildEddsa, buildPoseidon } = await import("circomlibjs");
   const eddsa = await buildEddsa();
   const poseidon = await buildPoseidon();
   const F = poseidon.F;

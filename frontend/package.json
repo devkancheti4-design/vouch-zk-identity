@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:wallet": "tsx --test test/wallet.test.mjs",
-    "test:shards": "tsx --test test/shards.test.mjs"
+    "test:shards": "tsx --test test/shards.test.mjs",
+    "prebuild": "node scripts/gen-issuer-key.mjs"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.103.1",
