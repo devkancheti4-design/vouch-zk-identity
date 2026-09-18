@@ -1,16 +1,18 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import key from "./generated/issuer-key.json";
+import { ISSUER_KEY } from "./generated/issuer-key";
 
 /**
  * Who is vouching. The public key here is what every verifier policy names.
  *
- * This answer is a pure function of ISSUER_SECRET, so it is derived at build time by
- * scripts/gen-issuer-key.mjs rather than by loading a curve implementation on every cold
- * start. Signing genuinely needs the curve; telling you who the issuer is does not, and
- * making this endpoint depend on it meant a runtime that could not load circomlibjs took
- * issuer discovery down with it.
+ * Derived at build time by scripts/gen-issuer-key.mjs, because this answer is a pure function
+ * of ISSUER_SECRET. Signing genuinely needs a curve; saying who the issuer is does not, and
+ * making this endpoint depend on one meant a runtime that cannot load circomlibjs took issuer
+ * discovery down with it.
+ *
+ * Nothing here imports anything but a generated constant -- no JSON resolution, no bundler
+ * tracing, nothing that can fail at cold start.
  */
 export default function handler(_req: VercelRequest, res: VercelResponse) {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.status(200).json({ name: key.name, pubX: key.pubX, pubY: key.pubY, issuedCount: 0 });
+  res.status(200).json({ ...ISSUER_KEY, issuedCount: 0 });
 }
